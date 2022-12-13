@@ -21,10 +21,15 @@ class _MainScreenState extends State<MainScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
 
+  final _nameNode = FocusNode();
+  final _ageNode = FocusNode();
+
   @override
   void dispose() {
     _nameController.dispose();
     _ageController.dispose();
+    _nameNode.dispose();
+    _ageNode.dispose();
     super.dispose();
   }
 
@@ -52,16 +57,26 @@ class _MainScreenState extends State<MainScreen> {
               maxLength: 20,
               hintText: "Enter name",
               keyboardType: TextInputType.text,
+              focusNode: _nameNode,
+              isAutoFocus: false,
+              onSubmited: (_) {
+                _ageController.text.isEmpty
+                    ? _fieldFocusChange(context, _nameNode, _ageNode)
+                    : null;
+              },
             ),
             CustomTextField(
-                textEditingController: _ageController,
-                maxLines: 1,
-                maxLength: 3,
-                hintText: "Enter age",
-                keyboardType: TextInputType.number,
-                filterTextInputFormatter: [
-                  FilteringTextInputFormatter.digitsOnly
-                ]),
+              textEditingController: _ageController,
+              maxLines: 1,
+              maxLength: 3,
+              hintText: "Enter age",
+              keyboardType: TextInputType.number,
+              filterTextInputFormatter: [
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              focusNode: _ageNode,
+              isAutoFocus: false,
+            ),
             CustomButton(onPressed: _sendToHell, buttonText: "Send to hell 👹"),
             CustomButton(
                 onPressed: _cleanUsers, buttonText: "Pardon everyone 👼"),
@@ -156,5 +171,11 @@ class _MainScreenState extends State<MainScreen> {
   void _cleanUsers() {
     final bloc = BlocProvider.of<UsersBloc>(context);
     bloc.add(CleanUsersEvent());
+  }
+
+  void _fieldFocusChange(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 }

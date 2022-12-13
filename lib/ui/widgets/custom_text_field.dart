@@ -10,6 +10,9 @@ class CustomTextField extends StatelessWidget {
     required this.hintText,
     required this.keyboardType,
     this.filterTextInputFormatter,
+    required this.focusNode,
+    required this.isAutoFocus,
+    this.onSubmited,
   }) : super(key: key);
 
   final TextEditingController textEditingController;
@@ -18,6 +21,9 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final TextInputType keyboardType;
   final List<TextInputFormatter>? filterTextInputFormatter;
+  final FocusNode focusNode;
+  final bool isAutoFocus;
+  final void Function(String)? onSubmited;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +40,9 @@ class CustomTextField extends StatelessWidget {
           hintText: hintText,
           contentPadding: const EdgeInsets.all(10),
         ),
+        focusNode: focusNode,
+        autofocus: isAutoFocus,
+        onSubmitted: onSubmited,
       ),
     );
   }
